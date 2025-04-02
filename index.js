@@ -2,6 +2,7 @@ const bookListElement = document.getElementById("book-list");
 const searchInput = document.getElementById("search");
 const bookDetailsElement = document.getElementById("book-details");
 const randomBtn = document.getElementById("randomBtn");
+const addBookForm = document.getElementById("addBookForm");
 let books = [];
 
 // Sample book data
@@ -25,39 +26,13 @@ books = [
     description:
       "A story about a dystopian future under a totalitarian regime.",
   },
-  {
-    id: 3,
-    title: "The Great Gatsby",
-    author: "F. Scott Fitzgerald",
-    genre: "Fiction",
-    publicationYear: 1925,
-    rating: 4.4,
-    description: "A novel about the American dream and disillusionment.",
-  },
-  {
-    id: 4,
-    title: "Moby Dick",
-    author: "Herman Melville",
-    genre: "Adventure",
-    publicationYear: 1851,
-    rating: 4.2,
-    description: "A quest to capture the elusive white whale.",
-  },
-  {
-    id: 5,
-    title: "Pride and Prejudice",
-    author: "Jane Austen",
-    genre: "Romance",
-    publicationYear: 1813,
-    rating: 4.6,
-    description: "A novel exploring themes of love and social class.",
-  },
+  // Add more sample books as needed
 ];
 
 // Display books in the list
-function displayBooks(books) {
+function displayBooks(booksToDisplay) {
   bookListElement.innerHTML = "";
-  books.forEach((book) => {
+  booksToDisplay.forEach((book) => {
     const bookItem = document.createElement("div");
     bookItem.className = "book-item";
     bookItem.textContent = `${book.title} by ${book.author}`;
@@ -79,6 +54,12 @@ function showBookDetails(book) {
     `;
 }
 
+// Function to add a new book (POST)
+function addBook(newBook) {
+  books.push(newBook);
+  displayBooks(books); // Refresh the displayed book list
+}
+
 // Search functionality
 searchInput.addEventListener("input", () => {
   const searchTerm = searchInput.value.toLowerCase();
@@ -87,7 +68,7 @@ searchInput.addEventListener("input", () => {
       book.title.toLowerCase().includes(searchTerm) ||
       book.author.toLowerCase().includes(searchTerm)
   );
-  displayBooks(filteredBooks);
+  displayBooks(filteredBooks); // Display filtered books
 });
 
 // Suggest a random book
@@ -95,6 +76,24 @@ randomBtn.onclick = () => {
   const randomIndex = Math.floor(Math.random() * books.length);
   showBookDetails(books[randomIndex]);
 };
+
+// Handle form submission
+addBookForm.addEventListener("submit", (event) => {
+  event.preventDefault(); // Prevent page refresh
+
+  const newBook = {
+    id: books.length + 1, // Simple ID generation
+    title: document.getElementById("title").value,
+    author: document.getElementById("author").value,
+    genre: document.getElementById("genre").value,
+    publicationYear: parseInt(document.getElementById("publicationYear").value),
+    rating: parseFloat(document.getElementById("rating").value),
+    description: document.getElementById("description").value,
+  };
+
+  addBook(newBook); // Add the new book
+  addBookForm.reset(); // Reset the form fields
+});
 
 // Initial display of all books
 displayBooks(books);
